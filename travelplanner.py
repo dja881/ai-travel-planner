@@ -2,10 +2,12 @@ import streamlit as st
 import os
 import json
 from datetime import datetime
-from serpapi import GoogleSearch 
-from openai import OpenAI
+from serpapi import GoogleSearch
+import openai
 
-
+# Load API keys securely from Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+SERPAPI_KEY = st.secrets["SERPAPI_KEY"]
 
 # Page setup
 st.set_page_config(page_title="🌍 AI Travel Planner", layout="wide")
@@ -21,8 +23,8 @@ st.markdown('<h1 class="title">✈️ AI-Powered Travel Planner</h1>', unsafe_al
 st.markdown('<p class="subtitle">Plan your dream trip with AI! Get personalized recommendations for flights, hotels, and activities.</p>', unsafe_allow_html=True)
 
 # Inputs
-source = st.text_input("🛫 Departure City (IATA Code):", "BOM")
-destination = st.text_input("🛬 Destination (IATA Code):", "DEL")
+source = st.text_input("🋦🇲 Departure City (IATA Code):", "BOM")
+destination = st.text_input("🋦🇲 Destination (IATA Code):", "DEL")
 departure_date = st.date_input("Departure Date")
 return_date = st.date_input("Return Date")
 num_days = st.slider("🕒 Trip Duration (days):", 1, 14, 5)
@@ -64,15 +66,15 @@ def fetch_flights(source, destination, departure_date, return_date):
         return []
 
 def chat_with_gpt(prompt):
-    response = client.chat.completions.create(
-         model="gpt-3.5-turbo",
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful travel planning assistant."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7
     )
-    return response.choices[0].message.content.strip()
+    return response.choices[0].message["content"].strip()
 
 def research_destination():
     prompt = f"Research top attractions in {destination} for a {travel_theme.lower()} trip. Preferences: {activity_preferences}. Budget: {budget}. Hotel Rating: {hotel_rating}."
@@ -114,3 +116,4 @@ if st.button("🚀 Generate Travel Plan"):
     st.write(itinerary)
 
     st.success("✅ Travel plan generated!")
+
