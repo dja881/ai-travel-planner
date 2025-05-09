@@ -5,9 +5,7 @@ from datetime import datetime
 from serpapi import GoogleSearch 
 from openai import OpenAI
 
-# Load API keys securely from .streamlit/secrets.toml
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-SERPAPI_KEY = st.secrets["SERPAPI_KEY"]
+
 
 # Page setup
 st.set_page_config(page_title="🌍 AI Travel Planner", layout="wide")
