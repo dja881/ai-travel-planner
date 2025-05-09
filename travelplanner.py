@@ -3,10 +3,10 @@ import os
 import json
 from datetime import datetime
 from serpapi import GoogleSearch
-import openai
+from openai import OpenAI
 
 # Load API keys securely from Streamlit secrets
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 SERPAPI_KEY = st.secrets["SERPAPI_KEY"]
 
 # Page setup
@@ -66,7 +66,7 @@ def fetch_flights(source, destination, departure_date, return_date):
         return []
 
 def chat_with_gpt(prompt):
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful travel planning assistant."},
@@ -74,7 +74,7 @@ def chat_with_gpt(prompt):
         ],
         temperature=0.7
     )
-    return response.choices[0].message["content"].strip()
+    return response.choices[0].message.content.strip()
 
 def research_destination():
     prompt = f"Research top attractions in {destination} for a {travel_theme.lower()} trip. Preferences: {activity_preferences}. Budget: {budget}. Hotel Rating: {hotel_rating}."
