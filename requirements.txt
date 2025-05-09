@@ -1,3 +1,4 @@
 streamlit
 openai
-serpapi
+serpapi==0.6.0
+
