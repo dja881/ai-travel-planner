@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import json
 from datetime import datetime
-from serpapi import GoogleSearch
+from serpapi import GoogleSearch 
 from openai import OpenAI
 
 # Load API keys securely from .streamlit/secrets.toml
